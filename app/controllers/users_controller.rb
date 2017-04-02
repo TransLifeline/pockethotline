@@ -37,11 +37,6 @@ class UsersController < ApplicationController
       flash.now.alert = "Invalid link"
       redirect_to root_url
     end
-
-    if params.key?(:force_reset)
-      flash.now.alert = "Password does not meet our security requirements. Please use a password at least 8 characters long, including a number and a special character ($@%^!*). Help keep Trans Lifeline safe!"
-      render
-    end
   end
 
   def save_password
