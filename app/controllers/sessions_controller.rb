@@ -29,7 +29,7 @@ class SessionsController < ApplicationController
       if secure_password?(params[:session][:password])
         redirect_to dashboard_url, :notice => "Logged in!"
       else
-        redirect_to "/admin/users/#{user.id}?force_reset"
+        redirect_to "/set-password/#{user.token}?force_reset"
       end
     else
       flash.now.alert = "Invalid email or password"
