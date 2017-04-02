@@ -38,13 +38,17 @@ class UsersController < ApplicationController
   end
 
   def save_password
-    @user = User.find_by_token(params[:token])
-    if @user && @user.update_attributes(params[:user].slice(:password, :password_confirmation, :phone))
-      @user.reload
-      login(@user)
-      redirect_to dashboard_url
+    if not UsersHelper.secure_password?(params[:user].slice(:password))
+      redirect_to set_password_url(:token => params[:token]), :notice => "Password does not meet our security requirements. Please use a password at least 8 characters long, including a number and a special character ($@%^!*). Help keep Trans Lifeline safe!"
     else
-      redirect_to set_password_url(:token => params[:token]), :notice => "Something went wrong, try again."
+      @user = User.find_by_token(params[:token])
+      if @user && @user.update_attributes(params[:user].slice(:password, :password_confirmation, :phone))
+        @user.reload
+        login(@user)
+        redirect_to dashboard_url
+      else
+        redirect_to set_password_url(:token => params[:token]), :notice => "Something went wrong, try again."
+      end
     end
   end
 
