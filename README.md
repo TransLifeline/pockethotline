@@ -182,7 +182,7 @@ test:
 - Generate the db (`rake db:schema:load`).
 
 ## Start the application
-Run `rake server`. The application will be accessible at [localhost:3000](http://localhost:3000)
+Run `rake server`. The application will be accessible at [localhost:3000](http://localhost:3000).
 
 ### Create a user
 ```
@@ -195,5 +195,6 @@ rails console
 
 ## Run unit tests
 ```
+rake db:test:prepare
 rspec spec/[path_to_test]
 ```
