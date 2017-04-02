@@ -4,6 +4,10 @@ module Admin
 
     def show
       @user = User.find(params[:id])
+      if params.key?(:force_reset)
+        flash.now.alert = "Password does not meet our security requirements. Please use a password at least 8 characters long, including a number and a special character ($@%^!*). Help keep Trans Lifeline safe!"
+        render
+      end
     end
 
     def update

@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  include UsersHelper
+
   def new
     logout
   end
@@ -23,7 +25,12 @@ class SessionsController < ApplicationController
       url = session[:return_to] ? session[:return_to] : root_url
       url = root_url if url.include?('/login')
       session[:return_to] = nil
-      redirect_to dashboard_url, :notice => "Logged in!"
+
+      if secure_password?(params[:session][:password])
+        redirect_to dashboard_url, :notice => "Logged in!"
+      else
+        redirect_to "/admin/users/#{user.id}?force_reset"
+      end
     else
       flash.now.alert = "Invalid email or password"
       # log failures so we can set up alerting on account hack attempts
