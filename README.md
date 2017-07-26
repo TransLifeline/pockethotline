@@ -13,7 +13,7 @@ The minimum hosting costs are about $35 a month. This is because a background wo
 #### Phone Costs
 [Twilio](http://twilio.com) phone numbers cost $1/month for local numbers and $2/month for toll-free.
 
-Twilio charges you by minutes used, $0.03/minute for local and $0.05/minute for toll-free. 
+Twilio charges you by minutes used, $0.03/minute for local and $0.05/minute for toll-free.
 
 *Twilio's published rates are $0.01 / $0.03 but that is only for the incoming call, you also have to add another $0.02 to each call because of the outgoing connection to the operators.*
 
@@ -26,19 +26,19 @@ Twilio charges you by minutes used, $0.03/minute for local and $0.05/minute for 
 ##2. Get a phone number on Twilio
 Start with the free trial number or purchase another toll-free or local number.
 
-##3. Take note of your phone number and API credentials AccountSID and AuthToken 
+##3. Take note of your phone number and API credentials AccountSID and AuthToken
 Find them under "Account Settings"
 
 ##4. Clone the repository  
 ```$ git clone git@github.com:chap/pockethotline.git```
 
-##5. Edit config file at ```/config/initializers/hotline.rb``` 
+##5. Edit config file at ```/config/initializers/hotline.rb```
 You must edit values for:
 
 * config.x.hotline.name
 * config.x.hotline.domain
 * config.x.hotline.organizer
-* config.x.hotline.organizer_email 
+* config.x.hotline.organizer_email
 * config.x.hotline.number
 
 ##6. Save changes  
@@ -49,7 +49,7 @@ You must edit values for:
 
 ##8. Enable Sendgrid add-on for sending email
 ```$ heroku addons:add sendgrid```
-  
+
 Any SMTP provider should work. If you don't use Sendgrid, manually update settings at ```config/initializers/smtp_settings.rb```
 
 ##9. Push application to heroku  
@@ -86,9 +86,9 @@ Copy the output and use it here:
 ```
   $ heroku run rails console
   $ u = User.new(
-    :name => 'my name', 
-    :email => 'myemail@email.com', 
-    :phone => '215-359-5228', 
+    :name => 'my name',
+    :email => 'myemail@email.com',
+    :phone => '215-359-5228',
     :password => 'setyourpasswordhere'
     )
     u.admin = true
@@ -132,14 +132,14 @@ Uncomment (remove leading '#') and edit values in  ```config/hotline.rb```
 ##4. Save changes and deploy
 ```$ git commit config/initializers/hotline.rb -m "add stripe details"```
 ```$ git push heroku```
-  
+
 ##5. Visit suporters page
 
 https://.../supporters/new  
 
 Stripe requires SSL to be enabled, if you're using your default heroku domain you will seemlessly piggy-back on the wildcard certificate at *.herokuapp.com.
 
-If you want to use a different domain you may have to purchase and setup your own certificate. 
+If you want to use a different domain you may have to purchase and setup your own certificate.
 
 ===
 
@@ -155,3 +155,46 @@ If you want to use a different domain you may have to purchase and setup your ow
 #Forward unanswered calls, change recordings, Twitter integration, etc
 
 Look at all the options in /config/hotline.rb
+
+# Local Development
+
+## Setup
+- Install RVM.
+- Install ruby 2.0.0-p648 (`rvm install 2.0.0-p648`).
+- Install bundler (`gem install bundler`).
+- Bundle the app (`bundle`).
+- Create the following file at `pockethotline/config/database.yml`:
+
+```
+development:
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 5
+  timeout: 5000
+
+test:
+  adapter: sqlite3
+  database: db/test.sqlite3
+  pool: 5
+  timeout: 5000
+```
+
+- Generate the db (`rake db:schema:load`).
+
+## Start the application
+Run `rake server`. The application will be accessible at [localhost:3000](http://localhost:3000).
+
+### Create a user
+```
+rails console
+> User.create({'email'=>'email@gmail.com', 'password'=>'password1!', 'name'=> 'name', 'phone'=>'0000000000'})
+# To make that user an admin User
+> user = User.find(2) # ID of the user you just created
+> user.update_attribute(:admin, true)
+```
+
+## Run unit tests
+```
+rake db:test:prepare
+rspec spec/[path_to_test]
+```
