@@ -49,9 +49,6 @@ class TwilioController < ApplicationController
         )
         @call.assign_sponsors
         @call.reload
-        if Rails.configuration.x.hotline.sms_number.present? && @call.sms_caller_for_review_at.blank? && @call.length > 90
-          @call.request_caller_review
-        end
       end
       render :text => '<?xml version="1.0" encoding="UTF-8"?><Response></Response>'
     else
@@ -68,7 +65,7 @@ class TwilioController < ApplicationController
     if params[:caller_review_id]
       @caller_review = Caller_review.find(params[:caller_review_id])
       @caller_review.update_attributes(
-        :comments_recording_url => params[:RecordingUrl], 
+        :comments_recording_url => params[:RecordingUrl],
         :comments_recording_duration => params[:RecordingDuration]
       )
     else
