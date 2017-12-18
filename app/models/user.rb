@@ -16,6 +16,7 @@ class User < ActiveRecord::Base
 
   validates_confirmation_of :password, :unless => :no_password_required
   validates_presence_of :password, :unless => :no_password_required
+  validates :password, :secure_password => true, :unless => :no_password_required
   validates_presence_of :name
   validates_uniqueness_of :email, :scope => :deleted_at
   validates_uniqueness_of :phone, :scope => :deleted_at, :unless => Proc.new {|u| u.phone.blank? }

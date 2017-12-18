@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  include UsersHelper
+
   def new
     logout
   end
@@ -23,7 +25,12 @@ class SessionsController < ApplicationController
       url = session[:return_to] ? session[:return_to] : root_url
       url = root_url if url.include?('/login')
       session[:return_to] = nil
-      redirect_to dashboard_url, :notice => "Logged in!"
+
+      if secure_password?(params[:session][:password])
+        redirect_to dashboard_url, :notice => "Logged in!"
+      else
+        redirect_to set_password_url(:token => user.token), :notice => "Password does not meet our security requirements. Please use a password at least 8 characters long, including a number and a special character ($@%^!*). Help keep Trans Lifeline safe!"
+      end
     else
       flash.now.alert = "Invalid email or password"
       # log failures so we can set up alerting on account hack attempts

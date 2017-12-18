@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  include UsersHelper
+
   before_filter :require_login, :except => [:set_password, :save_password, :apply, :apply_thanks, :create, :unsubscribe]
   before_filter :require_admin, :only => [:index, :new, :destroy, :show, :approve]
 
@@ -38,6 +40,11 @@ class UsersController < ApplicationController
   end
 
   def save_password
+    if not secure_password?(params[:user].slice(:password)["password"])
+      redirect_to set_password_url(:token => params[:token]), :notice => "Password does not meet our security requirements. Please use a password at least 8 characters long, including a number and a special character ($@%^!*). Help keep Trans Lifeline safe!"
+      return
+    end
+
     @user = User.find_by_token(params[:token])
     if @user && @user.update_attributes(params[:user].slice(:password, :password_confirmation, :phone))
       @user.reload
